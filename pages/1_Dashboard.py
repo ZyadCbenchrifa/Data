@@ -3,9 +3,10 @@ import pandas as pd
 import plotly.express as px
 
 st.set_page_config(page_title="Dashboard")
+
 def load_data():
     # Chargement des données
-    return pd.read_excel('data_visualisation.xlsx')
+    return pd.read_excel('Data_visual_clean.xlsx')
 
 from css import load_css
 load_css()
@@ -15,12 +16,22 @@ def main():
 
     df = load_data()
 
+    # Liste des types de biens
+    property_types = ['Terrain', 'L/C', 'Villa', 'Bureau', 'Riad', 'Usine', 'Studio']
+
     # Calculs pour le résumé des données
     total_vente = len(df[df['Action commerciale'] == 'À vendre'])
     total_location = len(df[df['Action commerciale'] == 'À Louer'])
-    prix_moyen_vente = df[df['Action commerciale'] == 'À vendre']['Prix de vente'].mean()
-    prix_moyen_location = df[df['Action commerciale'] == 'À Louer']['Prix de location ( pu*superficie)'].mean()
-    surface_moyenne = df['Surface'].mean()
+    # Calcul des prix et surfaces moyens par type de bien
+    data = []
+    for property_type in property_types:
+        prix_moyen_vente_type = df[(df['Action commerciale'] == 'À vendre') & (df['Type de bien'] == property_type)]['Prix de vente'].mean()
+        prix_moyen_location_type = df[(df['Action commerciale'] == 'À Louer') & (df['Type de bien'] == property_type)]['Prix de location ( pu*superficie)'].mean()
+        surface_moyenne_type = df[df['Type de bien'] == property_type]['Surface'].mean()
+        data.append([property_type, prix_moyen_vente_type, prix_moyen_location_type, surface_moyenne_type])
+
+    # Conversion des données en DataFrame pour affichage dans un tableau
+    df_metrics = pd.DataFrame(data, columns=['Type de bien', 'Prix Moyen Vente (DH)', 'Prix Moyen Location (DH)', 'Surface Moyenne (m²)'])
 
     # Affichage des sections Statistiques Clés et Répartition des Biens par Zone côte à côte
     col1, col2 = st.columns(2)
@@ -30,10 +41,10 @@ def main():
         st.markdown('<div class="st-emotion-cache-13ln4jf">', unsafe_allow_html=True)
         st.metric("Total Ventes", total_vente)
         st.metric("Total Locations", total_location)
-        st.metric("Surface Moyenne (m²)", f"{surface_moyenne:.2f}")
-        st.metric("Prix Moyen Vente (DH)", f"{prix_moyen_vente:,.2f}")
-        st.metric("Prix Moyen Location (DH/m²)", f"{prix_moyen_location:,.2f}")
         st.markdown('</div>', unsafe_allow_html=True)
+
+        st.header('Prix et Surface Moyens par Type de Bien')
+        st.dataframe(df_metrics)
 
     with col2:
         st.header('Répartition des Biens par Zone')
@@ -68,5 +79,5 @@ def main():
         st.subheader("Plus Grandes Propriétés Disponibles")
         st.dataframe(largest_properties)
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     main()
