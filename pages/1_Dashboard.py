@@ -6,7 +6,7 @@ st.set_page_config(page_title="Dashboard")
 
 def load_data():
     # Chargement des données
-    return pd.read_excel('Data_visualisation.xlsx')
+    return pd.read_excel('data_visualisation.xlsx')
 
 from css import load_css
 load_css()
