@@ -79,5 +79,6 @@ def main():
         st.subheader("Plus Grandes Propriétés Disponibles")
         st.dataframe(largest_properties)
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     main()
+
