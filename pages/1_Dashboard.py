@@ -6,7 +6,7 @@ st.set_page_config(page_title="Dashboard")
 
 def load_data():
     # Chargement des données
-    return pd.read_excel('data_visualisation.xlsx')
+    return pd.read_excel('Data_visual_clean.xlsx')
 
 from css import load_css
 load_css()
@@ -79,5 +79,5 @@ def main():
         st.subheader("Plus Grandes Propriétés Disponibles")
         st.dataframe(largest_properties)
 
-if __name__ == '__main__':   
+if _name_ == '_main_':
     main()
